@@ -1,4 +1,10 @@
-import Board from "./board.js";
+const Board = require("./board.js");
+const readline = require("readline");
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
 const LAYOUTS = {
     small: { gridSize: 9, numBombs: 10},
@@ -7,18 +13,16 @@ const LAYOUTS = {
 };
 
 class Game {
-    constructor(size) {
-        size = size || "small";
+    constructor(size="small") {
         const layout = LAYOUTS[size];
         this.board = new Board(layout.gridSize, layout.numBombs);
+        console.log("this.board", this.board);
     }
 
-    play() {
+    play(rl) {
         while (!(this.board.lost() || this.board.won())) {
             console.log(this.board.render());
-            let action, pos;
-            [action, pos] = this.getMove();
-            this.handleMove(action, pos);
+            this.getMove(rl);
         }
         if (this.board.won()) {
             console.log("Winner!");
@@ -28,9 +32,32 @@ class Game {
         }
     }
 
-    getMove() {
-
+    getMove(rl) {
+        rl.question("Enter action, rowNum, colNum: " + "\n", input => {
+            let action, rowNum, colNum;
+            [action, rowNum, colNum] = input.split(",");
+            console.log("action", action);
+            this.handleMove(action, [parseInt(rowNum, 10), parseInt(colNum, 10)]);
+        });
     }
 
+    handleMove(action, pos) {
+        let tile = this.board.getTile(pos);
+        console.log("handleMove action", action);
+        switch (action) {
+            case "f":
+                tile.toggleFlag();
+                break;
+            case "e":
+                tile.explore();
+                break;
+            default:
+                console.log("Invalid action");
+        }
+    }
 
 }
+
+let g = new Game();
+
+g.play(rl);

@@ -1,4 +1,4 @@
-import Tile from "./tile.js";
+const Tile = require("./tile.js");
 
 class Board {
     constructor(size, numBombs) {
@@ -7,6 +7,8 @@ class Board {
 
         this.grid = [];
         this.initGrid();
+        console.log(this.grid[0][1]);
+
     }
 
     initGrid() {
@@ -22,18 +24,21 @@ class Board {
     }
 
     plantBombs() {
+        console.log("plantBombs");
         let totalBombs = 0;
         while (totalBombs < this.numBombs) {
+            console.log(totalBombs);
             let randPos = this.randomPos();
+            console.log("randPos", randPos);
             let tile = this.getTile(randPos);
             if (tile.bombed) continue;
-            tile.bombed = true;
+            tile.plantBomb();
             totalBombs++;
         }
     }
 
     getTile(pos) {
-        return this.grid[pos[0], pos[1]];
+        return this.grid[pos[0]][pos[1]];
     }
 
     randomPos() {
@@ -71,6 +76,13 @@ class Board {
         }
         return true;
     }
+
+    inBounds(pos) {
+        return (
+            (pos[0] >= 0 && pos[0] < this.size) &&
+            (pos[1] >= 0 && pos[1] < this.size)
+        );
+    }
 }
 
-export default Board;
+module.exports = Board;

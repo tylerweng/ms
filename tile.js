@@ -18,16 +18,16 @@ class Tile {
     }
 
     adjacentBombCount() {
-        return this.neighbors.filter(n => n.bombed).length;
+        return this.neighbors().filter(n => n.bombed).length;
     }
 
     explore() {
         if (this.explored || this.flagged) return this;
         this.explored = true;
         if (!this.bombed && this.adjacentBombCount() === 0) {
-            this.neighbors.forEach(n => n.explore());
+            this.neighbors().forEach(n => n.explore());
         }
-        return self;
+        return this;
     }
 
     neighbors() {
@@ -65,6 +65,10 @@ class Tile {
     toggleFlag() {
         if(!this.explored) this.flagged = !this.flagged
     }
+
+    plantBomb() {
+        this.bombed = true;
+    }
 }
 
-export default Tile;
+module.exports = Tile;
