@@ -7,7 +7,6 @@ class Board {
 
         this.grid = [];
         this.initGrid();
-        console.log(this.grid[0][1]);
 
     }
 
@@ -24,12 +23,9 @@ class Board {
     }
 
     plantBombs() {
-        console.log("plantBombs");
         let totalBombs = 0;
         while (totalBombs < this.numBombs) {
-            console.log(totalBombs);
             let randPos = this.randomPos();
-            console.log("randPos", randPos);
             let tile = this.getTile(randPos);
             if (tile.bombed) continue;
             tile.plantBomb();

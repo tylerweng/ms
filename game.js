@@ -16,34 +16,32 @@ class Game {
     constructor(size="small") {
         const layout = LAYOUTS[size];
         this.board = new Board(layout.gridSize, layout.numBombs);
-        console.log("this.board", this.board);
     }
 
     play(rl) {
-        while (!(this.board.lost() || this.board.won())) {
-            console.log(this.board.render());
-            this.getMove(rl);
-        }
-        if (this.board.won()) {
-            console.log("Winner!");
-        } else if (this.board.lost()) {
-            console.log("Boom!");
-            console.log(this.board.reveal());
-        }
+        this.getMove(rl);
     }
 
     getMove(rl) {
+        console.log(this.board.render());
         rl.question("Enter action, rowNum, colNum: " + "\n", input => {
             let action, rowNum, colNum;
             [action, rowNum, colNum] = input.split(",");
-            console.log("action", action);
             this.handleMove(action, [parseInt(rowNum, 10), parseInt(colNum, 10)]);
         });
+        if (this.board.won()) {
+            console.log("winner!");
+            rl.close();
+
+        } else if (this.board.lost()) {
+            console.log("Boom!");
+            console.log(this.board.reveal());
+            rl.close();
+        }
     }
 
     handleMove(action, pos) {
         let tile = this.board.getTile(pos);
-        console.log("handleMove action", action);
         switch (action) {
             case "f":
                 tile.toggleFlag();
@@ -54,6 +52,7 @@ class Game {
             default:
                 console.log("Invalid action");
         }
+        this.play(rl);
     }
 
 }
